@@ -1,6 +1,7 @@
 import json
-from django.db.models import Sum, Count
-from django.views.generic import TemplateView
+from django.http import HttpResponse
+from django.db.models import Sum
+from django.views.generic import View, TemplateView
 from contributions.models import Contribution
 
 #
@@ -101,3 +102,74 @@ class IndexView(TemplateView):
         # return the amended context to the template
         return context
 
+class Sectors(View):
+    def get(self, *args, **kwargs):
+        garcetti_contributions = Contribution.objects.filter(candidate__last_name='Garcetti')
+        greuel_contributions = Contribution.objects.filter(candidate__last_name='Greuel')        
+        sectors = set(Contribution.objects.all().values_list('sector', flat=True))
+        all_sectors = Contribution.objects.values_list('sector', 'amount')
+        garcetti_sectors = garcetti_contributions.values_list('sector', 'amount')
+        greuel_sectors = greuel_contributions.values_list('sector', 'amount')
+
+        contributions_by_sector = []
+        
+        for sector in sectors:
+            contributions_by_sector.append({
+                'name': sector,
+                'garcetti': sum([i[1] for i in garcetti_sectors if i[0] == sector]),
+                'greuel': sum([i[1] for i in greuel_sectors if i[0] == sector]),
+                'total': sum([i[1] for i in all_sectors if i[0] == sector]),
+            })
+
+        contributions_by_sector = sorted(contributions_by_sector,
+                                    key=lambda k: k['total'], reverse=True) 
+
+        return HttpResponse(json.dumps(contributions_by_sector), mimetype="application/json")
+
+class Occupations(View):
+    def get(self, *args, **kwargs):
+        garcetti_contributions = Contribution.objects.filter(candidate__last_name='Garcetti')
+        greuel_contributions = Contribution.objects.filter(candidate__last_name='Greuel')        
+        occupations = set(Contribution.objects.all().values_list('occupation', flat=True))
+        all_occupations = Contribution.objects.values_list('occupation', 'amount')
+        garcetti_occupations = garcetti_contributions.values_list('occupation', 'amount')
+        greuel_occupations = greuel_contributions.values_list('occupation', 'amount')
+
+        contributions_by_occupation = []
+        
+        for occupation in occupations:
+            contributions_by_occupation.append({
+                'name': occupation,
+                'garcetti': sum([i[1] for i in garcetti_occupations if i[0] == occupation]),
+                'greuel': sum([i[1] for i in greuel_occupations if i[0] == occupation]),
+                'total': sum([i[1] for i in all_occupations if i[0] == occupation]),
+            })
+
+        contributions_by_occupation = sorted(contributions_by_occupation,
+                                    key=lambda k: k['total'], reverse=True) 
+
+        return HttpResponse(json.dumps(contributions_by_occupation), mimetype="application/json")
+
+class Employees(View):
+    def get(self, *args, **kwargs):
+        garcetti_contributions = Contribution.objects.filter(candidate__last_name='Garcetti')
+        greuel_contributions = Contribution.objects.filter(candidate__last_name='Greuel')        
+        occupations = set(Contribution.objects.all().values_list('occupation', flat=True))
+        all_occupations = Contribution.objects.values_list('occupation', 'amount')
+        garcetti_occupations = garcetti_contributions.values_list('occupation', 'amount')
+        greuel_occupations = greuel_contributions.values_list('occupation', 'amount')
+
+        contributions_by_occupation = []
+        
+        for occupation in occupations:
+            contributions_by_occupation.append({
+                'name': occupation,
+                'garcetti': sum([i[1] for i in garcetti_occupations if i[0] == occupation]),
+                'greuel': sum([i[1] for i in greuel_occupations if i[0] == occupation]),
+                'total': sum([i[1] for i in all_occupations if i[0] == occupation]),
+            })
+
+        contributions_by_occupation = sorted(contributions_by_occupation,
+                                    key=lambda k: k['total'], reverse=True) 
+
+        return HttpResponse(json.dumps(contributions_by_occupation), mimetype="application/json")
