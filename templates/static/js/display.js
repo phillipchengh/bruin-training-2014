@@ -22,7 +22,10 @@ function display_query() {
 	var request = $.ajax({
 		url: query_url,
 		type: "GET",
-		dataType: "json"
+		dataType: "json",
+		beforeSend: function() {
+			$(".d3-content").html("loading...");
+		}
 	});
 
 	//on success, use data to display pretty stuff
