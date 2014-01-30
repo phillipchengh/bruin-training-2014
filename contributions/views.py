@@ -138,7 +138,7 @@ class Query(View):
     def stringify_item(self, item, index):
         str_item = list(item)
         if str_item[index] is None:
-            str_item[index] = u'None'
+            str_item[index] = u'No Committee'
         else:
             str_item[index] = self.committees[str_item[index]]
         return str_item

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from contributions.views import IndexView, Sectors, Occupations, Query
+from contributions.views import IndexView, Query
 from django.conf.urls import patterns, include, url
 admin.autodiscover()
 
