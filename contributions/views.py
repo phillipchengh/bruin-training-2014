@@ -134,14 +134,30 @@ class Query(View):
                 return False
         return True
         
-    #replaces committee int to string
-    def stringify_item(self, item, index):
-        str_item = list(item)
-        if str_item[index] is None:
-            str_item[index] = u'No Committee'
+    #maps committee int to string
+    def map_committee(self, item, index):
+        lst = list(item)
+        if lst[index] is None:
+            lst[index] = u'No Committee'
         else:
-            str_item[index] = self.committees[str_item[index]]
-        return str_item
+            lst[index] = self.committees[lst[index]]
+        return lst
+
+    #turns item to json list (since there could be more than one category of names)
+    #also change empty to strings to "None"... why not 
+    def json_list(self, types, item):
+        i = 0
+        lst = []
+        for name in item:
+            n = {}
+            n['type'] = types[i]
+            if not name:
+                n['name'] = "None"
+            else:
+                n['name'] = name
+            lst.append(n)
+            i += 1
+        return lst
 
     #pretty much same code as anthony's except with multiple types
     def get(self, request, *args, **kwargs):
@@ -161,12 +177,12 @@ class Query(View):
         types_len = len(types)
 
         #slightly different paths if committee since we need to replace it with the string version
-        #name will just be the types joined with commas
+        #names will be a json list of each name
         if 'committee' in types:
             committee_index = types.index('committee')
             for item in items:
                 contributions_by_types.append({
-                        'name': ", ".join(self.stringify_item(item, committee_index)),
+                        'names': self.json_list(types, self.map_committee(item, committee_index)),
                         'garcetti': sum(i[0] for i in garcetti_items if self.equal_types(item, i, types_len)),
                         'greuel': sum(i[0] for i in greuel_items if self.equal_types(item, i, types_len)),
                         'total': sum(i[0] for i in all_items if self.equal_types(item, i, types_len)),                    
@@ -174,7 +190,7 @@ class Query(View):
         else:
             for item in items:
                 contributions_by_types.append({
-                        'name': ", ".join(item),
+                        'names': self.json_list(types, item),
                         'garcetti': sum(i[0] for i in garcetti_items if self.equal_types(item, i, types_len)),
                         'greuel': sum(i[0] for i in greuel_items if self.equal_types(item, i, types_len)),
                         'total': sum(i[0] for i in all_items if self.equal_types(item, i, types_len)),                    
@@ -183,5 +199,6 @@ class Query(View):
         contributions_by_types = sorted(contributions_by_types,
                                     key=lambda k: k['total'], reverse=True) 
 
+        print contributions_by_types[0]
         #return as json
         return HttpResponse(json.dumps(contributions_by_types), mimetype="application/json")
