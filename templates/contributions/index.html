@@ -30,7 +30,7 @@
             http://getbootstrap.com/
      -->
 
-<!--     <div class="page-header">
+    <!-- <div class="page-header">
         <h1>Contribution Data</h1>
     </div>
 
@@ -84,10 +84,21 @@
         </tbody>
     </table>
  -->
-    <div class="btn-group">
-        <button class="btn" onclick="display_sectors()">Sectors</button>
-        <button class="btn" onclick="display_occupations()">Occupations</button>
-    </div>
+    <div class="mayoral-bar">
+         <div class="row">
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <form onsubmit="display_query(); return false;">
+                        <span class="input-group-addon"><input type="checkbox" class="query-box" value="committee">Committee</span>
+                        <span class="input-group-addon"><input type="checkbox" class="query-box" value="occupation">Occupation</span>
+                        <span class="input-group-addon"><input type="checkbox" class="query-box" value="sector">Sector</span>
+                        <span class="input-group-addon"><input type="checkbox" class="query-box" value="state">State</span>
+                        <span class="input-group-addon"><input type="submit" value="Submit"></span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
     <div class="d3-content">
     </div>
 {% endblock %}

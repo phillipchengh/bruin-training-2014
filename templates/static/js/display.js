@@ -1,77 +1,39 @@
 $(document).ready(function() {
-	display_sectors();	
+	// display something at start?
 });
 
-function display_sectors() {
+//after submit, query for data and display it!
+function display_query() {
+	var query_url = "services/query.json?";
+	var checked = $('input[type=checkbox].query-box:checked')
+
+	//require at least one checked
+	if (checked.length < 1) {
+		$(".d3-content").html("Need to check off at least one.");
+		return;
+	}
+
+	//add url parameters
+	checked.each(function () {
+		query_url += "type=" + $(this).val() + "&";
+	});
+
+	//ajax request
 	var request = $.ajax({
-		url: "services/sectors.json",
+		url: query_url,
 		type: "GET",
 		dataType: "json"
 	});
 
+	//on success, use data to display pretty stuff
 	request.done(function(data) {
-		// $(".d3-content").html(JSON.stringify(data));
-		display_sectors_pie_charts(data);
-	});
-
-	request.fail(function(jqXHR, textStatus) {
-		$(".d3-content").html("Something went wrong with textStatus: " + textStatus);
-	});
-}
-
-//[{"total":6908679,"garcetti":1111343,"greuel":5797336,"name":"Union"}
-function display_sectors_pie_charts(sector_data) {
-	$(".d3-content").empty();
-	
-	var width = 960,
-	    height = 500,
-	    radius = Math.min(width, height) / 2;
-        color = d3.scale.category20b();     //builtin range of colors
-
-	var arc = d3.svg.arc()
-	.outerRadius(radius - 10)
-	.innerRadius(0);
-
-	var pie = d3.layout.pie()
-    .sort(null)
-    .value(function(d) { return d.garcetti; });
-
-	var svg = d3.select(".d3-content").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .data(sector_data)
-    .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-    var g = svg.selectAll(".arc")
-  	.data(pie(sector_data))
-    .enter().append("g")
-	.attr("class", "arc");
-
-  	g.append("path")
-  	.attr("fill", function(d, i) { return color(i); } )
-  	.attr("d", arc)
-
-  	g.append("text")
-    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-    .attr("dy", ".8em")
-    .style("text-anchor", "middle")
-    .text(function(d) { return d.data.name; });
-}
-
-function display_occupations() {
-	var request = $.ajax({
-		url: "services/occupations.json",
-		type: "GET",
-		dataType: "json"
-	});
-
-	request.done(function(data) {
+		//display stuff here
 		$(".d3-content").html(JSON.stringify(data));
 	});
 
+	//if it failed
 	request.fail(function(jqXHR, textStatus) {
 		$(".d3-content").html("Something went wrong with textStatus: " + textStatus);
 	});
-}
 
+}
