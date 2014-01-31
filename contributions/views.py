@@ -2,6 +2,7 @@ import json
 from django.http import HttpResponse
 from django.db.models import Sum
 from django.views.generic import View, TemplateView
+from django.shortcuts import render_to_response
 from contributions.models import Contribution
 
 #
@@ -102,6 +103,11 @@ class IndexView(TemplateView):
         # return the amended context to the template
         return context
 
+# just returns the notes.html
+class Notes(View):
+    def get(self, request, *args, **kwargs):
+        return render_to_response('contributions/notes.html')
+
 class Query(View):
 
     #list of types that can be gotten
@@ -144,7 +150,7 @@ class Query(View):
         return lst
 
     #turns item to json list (since there could be more than one category of names)
-    #also change empty to strings to "None"... why not 
+    #also change empty to strings to "Unavailable"... why not 
     def json_list(self, types, item):
         i = 0
         lst = []
@@ -152,7 +158,7 @@ class Query(View):
             n = {}
             n['type'] = types[i]
             if not name:
-                n['name'] = "None"
+                n['name'] = "Unavailable"
             else:
                 n['name'] = name
             lst.append(n)
@@ -199,6 +205,4 @@ class Query(View):
         contributions_by_types = sorted(contributions_by_types,
                                     key=lambda k: k['total'], reverse=True) 
 
-        print contributions_by_types[0]
-        #return as json
         return HttpResponse(json.dumps(contributions_by_types), mimetype="application/json")

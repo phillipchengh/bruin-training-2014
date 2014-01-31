@@ -16,10 +16,13 @@
     <script src="{% static "js/d3.v3.js" %}"></script>
     <!-- Underscore site is here: http://underscorejs.org/ -->
     <script src="{% static "js/underscore.min.js" %}"></script>
+    <!-- load spin-y thing -->
+    <script src="{% static "js/spin.min.js" %}"></script>    
+    <!-- main query and d3 script -->
     <script src="{% static "js/display.js" %}"></script>    
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <!-- <div class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -28,15 +31,34 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Mayoral Contributions amazing!</a>
+                <a class="navbar-brand" href="#">Mayoral Contributions</a>
             </div>
             <div class="collapse navbar-collapse">
-<!--
-                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                </ul>
- -->
             </div>
+        </div>
+    </div> -->
+    <div id="top-container" class="container">
+        <div id="spin-zone"></div>
+        <div class="left-zone">
+            <h1 id="title">Mayoral Contributions</h1>
+            <div class="info-block">
+                <p class="desc">Clarify where Eric Garcetti's and Wendy Greuel's campaign contributions originated from. Check off any number of categories to specify, then search!</p>
+                <div class="mayoral-bar">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <form onsubmit="display_query(); return false;">
+                                    <span class="input-group-addon"><input type="checkbox" class="query-box" value="committee">Committee</span>
+                                    <span class="input-group-addon"><input type="checkbox" class="query-box" value="occupation">Occupation</span>
+                                    <span class="input-group-addon"><input type="checkbox" class="query-box" value="sector">Sector</span>
+                                    <span class="input-group-addon"><input type="checkbox" class="query-box" value="state">State</span>
+                                    <span class="input-group-btn"><input type="submit" class="btn btn-warning" value="Search"></span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
         </div>
     </div>
     <div class="container" id="content">
