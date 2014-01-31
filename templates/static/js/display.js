@@ -8,6 +8,40 @@ function display_notes() {
 	$('#d3-content').load("contributions/notes.html");
 }
 
+//format money I got from http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+function format_money (string) {
+	return "$" + string.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+}
+
+//display simple table (my personal favorite)
+function display_table(data) {
+	var lazy_html = "";
+	var i;
+	lazy_html += "<table class=\"table amazing-table\">";
+	lazy_html +="<tr><th>Total</th><th>Garcetti</th><th>Greuel</th>";
+
+	for (j = 0; j < data[0].names.length; j++) {
+		lazy_html +="<th>" + data[0].names[j].type + "</th>";
+	}
+	lazy_html += "</tr>";
+
+	console.log(data.length);		
+	console.log(data);
+	for (i = 0; i < data.length; i++) {
+		lazy_html += "<tr>";
+		lazy_html += "<td>" + format_money(data[i].total) + "</td>";			
+		lazy_html += "<td>" + format_money(data[i].garcetti) + "</td>";			
+		lazy_html += "<td>" + format_money(data[i].greuel) + "</td>";	
+		for (j = 0; j < data[i].names.length; j++) {
+			lazy_html +="<td>" + data[i].names[j].name + "</td>";
+		}					
+		lazy_html += "</tr>";
+
+	}
+	lazy_html += "</table>"
+	$('#d3-content').append(lazy_html);
+}
+
 //after submit, query for data and display it!
 function display_query() {
 	var query_url = "services/query.json?";
@@ -55,12 +89,13 @@ function display_query() {
 		}
 	});
 
+	var x_test = 0;
 	//on success, use data to display pretty stuff
 	request.done(function(data) {
 		//display stuff here
 		$('#spin-zone').empty();
 		$('#d3-content').html("<button class=\"btn btn-warning\" onClick=\"display_notes()\">Back to Notes</button><br>")
-		$("#d3-content").append(JSON.stringify(data));
+		display_table(data);
 	});
 
 	//if it failed
